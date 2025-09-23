@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useAccount, useBalance, useEnsName } from "wagmi";
 import { CustomConnectButton } from "@/components/connect-button";
+import { useNFTs } from "@/hooks/useNFTs";
 
 const ownedNFTs = [
   {
@@ -57,6 +58,9 @@ export default function ProfilePage() {
   const { data: ensName } = useEnsName({
     address: address,
   });
+
+  // NFT data hook
+  const { nfts, loading: nftsLoading, error: nftsError, refreshNFTs } = useNFTs();
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
@@ -194,7 +198,7 @@ export default function ProfilePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
             <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 text-center">
               <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                {userStats.totalNFTs}
+                {nftsLoading ? "..." : nfts.length}
               </div>
               <div className="text-gray-400 text-sm mt-1">NFTs Owned</div>
             </div>
@@ -264,9 +268,23 @@ export default function ProfilePage() {
               </Link>
             </div>
 
-            {ownedNFTs.length > 0 ? (
+            {nftsLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {ownedNFTs.map((nft) => (
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-white/10 rounded-3xl overflow-hidden">
+                      <div className="aspect-square bg-gray-700/50"></div>
+                      <div className="p-6 space-y-3">
+                        <div className="h-4 bg-gray-700/50 rounded"></div>
+                        <div className="h-3 bg-gray-700/30 rounded w-2/3"></div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : nfts.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {nfts.map((nft) => (
                   <div key={nft.id} className="group relative">
                     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-white/10 transition-all duration-500 hover:border-purple-500/30 hover:shadow-2xl hover:shadow-purple-500/10 hover:-translate-y-2">
                       {/* NFT Image Placeholder */}
@@ -279,9 +297,11 @@ export default function ProfilePage() {
                         </div>
                         
                         {/* Rarity Badge */}
-                        <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold border backdrop-blur-sm ${getRarityColor(nft.rarity)}`}>
-                          {nft.rarity}
-                        </div>
+                        {nft.rarity && (
+                          <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold border backdrop-blur-sm ${getRarityColor(nft.rarity)}`}>
+                            {nft.rarity}
+                          </div>
+                        )}
 
                         {/* Hover Overlay */}
                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-3">
@@ -303,17 +323,19 @@ export default function ProfilePage() {
                       <div className="p-6">
                         <div className="mb-4">
                           <h3 className="text-xl font-bold text-white mb-1">{nft.name}</h3>
-                          <p className="text-gray-400 text-sm">Acquired on {new Date(nft.dateAcquired).toLocaleDateString()}</p>
+                          {nft.dateAcquired && (
+                            <p className="text-gray-400 text-sm">Acquired on {new Date(nft.dateAcquired).toLocaleDateString()}</p>
+                          )}
                         </div>
 
                         <div className="flex items-center justify-between mb-4">
                           <div>
-                            <div className="text-sm text-gray-400">Current Value</div>
-                            <div className="text-lg font-bold text-cyan-400">{nft.price} ETH</div>
+                            <div className="text-sm text-gray-400">Token ID</div>
+                            <div className="text-lg font-bold text-cyan-400">#{nft.tokenId}</div>
                           </div>
                           <div className="text-right">
                             <div className="text-sm text-gray-400">Category</div>
-                            <div className="text-sm font-medium text-purple-400">{nft.category}</div>
+                            <div className="text-sm font-medium text-purple-400">{nft.category || 'NFT'}</div>
                           </div>
                         </div>
 

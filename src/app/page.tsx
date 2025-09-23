@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 export default function HomePage() {
@@ -32,7 +33,7 @@ export default function HomePage() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
-            <button className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-500 to-cyan-500 p-0.5 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25">
+            <Link href="/marketplace" className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-500 to-cyan-500 p-0.5 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25">
               <div className="relative rounded-2xl bg-gradient-to-r from-purple-500 to-cyan-500 px-8 py-4 text-white font-semibold transition-all duration-300">
                 <span className="relative z-10 flex items-center space-x-2">
                   <span>Explore Marketplace</span>
@@ -41,7 +42,7 @@ export default function HomePage() {
                   </svg>
                 </span>
               </div>
-            </button>
+            </Link>
             
             <button className="group relative overflow-hidden rounded-2xl border border-purple-500/30 bg-black/20 backdrop-blur-sm px-8 py-4 text-white font-semibold transition-all duration-300 hover:border-purple-400/50 hover:bg-purple-500/10">
               <span className="flex items-center space-x-2">
@@ -140,14 +141,12 @@ export default function HomePage() {
 
           {/* View All Button */}
           <div className="text-center mt-12">
-            <button className="group relative overflow-hidden rounded-2xl border border-purple-500/30 bg-black/20 backdrop-blur-sm px-8 py-4 text-white font-semibold transition-all duration-300 hover:border-purple-400/50 hover:bg-purple-500/10">
-              <span className="flex items-center space-x-2">
-                <span>View All NFTs</span>
-                <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </span>
-            </button>
+            <Link href="/marketplace" className="group relative overflow-hidden rounded-2xl border border-purple-500/30 bg-black/20 backdrop-blur-sm px-8 py-4 text-white font-semibold transition-all duration-300 hover:border-purple-400/50 hover:bg-purple-500/10 inline-flex items-center space-x-2">
+              <span>View All NFTs</span>
+              <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
           </div>
         </div>
       </section>

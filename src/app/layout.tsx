@@ -1,6 +1,7 @@
 // app/layout.tsx
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -55,27 +56,27 @@ export default function RootLayout({
 
               {/* Navigation */}
               <nav className="hidden md:flex items-center space-x-8">
-                <a 
+                <Link 
                   href="/" 
-                  className="relative text-gray-300 hover:text-white transition-all duration-300 group"
+                  className="relative text-gray-300 hover:text-white transition-all duration-300 group px-4 py-2"
                 >
                   <span className="relative z-10">Home</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300 -z-10"></div>
-                </a>
-                <a 
+                </Link>
+                <Link 
                   href="/marketplace" 
-                  className="relative text-gray-300 hover:text-white transition-all duration-300 group"
+                  className="relative text-gray-300 hover:text-white transition-all duration-300 group px-4 py-2"
                 >
                   <span className="relative z-10">Marketplace</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300 -z-10"></div>
-                </a>
-                <a 
+                </Link>
+                <Link 
                   href="/profile" 
-                  className="relative text-gray-300 hover:text-white transition-all duration-300 group"
+                  className="relative text-gray-300 hover:text-white transition-all duration-300 group px-4 py-2"
                 >
                   <span className="relative z-10">Profile</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300 -z-10"></div>
-                </a>
+                </Link>
               </nav>
 
               {/* Wallet Connect Button */}

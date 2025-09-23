@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useAccount, useBalance, useEnsName } from "wagmi";
+import { CustomConnectButton } from "@/components/connect-button";
 
 const ownedNFTs = [
   {
@@ -46,6 +48,15 @@ const tabs = ["Owned", "Created", "Activity", "Favorites"];
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("Owned");
+  
+  // Wagmi hooks for wallet data
+  const { address, isConnected, chain } = useAccount();
+  const { data: balance } = useBalance({
+    address: address,
+  });
+  const { data: ensName } = useEnsName({
+    address: address,
+  });
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
@@ -54,6 +65,20 @@ export default function ProfilePage() {
       case "Epic": return "text-purple-400 border-purple-400/30 bg-purple-400/10";
       case "Legendary": return "text-yellow-400 border-yellow-400/30 bg-yellow-400/10";
       default: return "text-gray-400 border-gray-400/30 bg-gray-400/10";
+    }
+  };
+
+  // Helper functions
+  const formatAddress = (addr: string) => {
+    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      // You could add a toast notification here
+    } catch (err) {
+      console.error('Failed to copy: ', err);
     }
   };
 
@@ -92,21 +117,49 @@ export default function ProfilePage() {
             <div className="mt-6 space-y-4">
               <h1 className="text-4xl md:text-5xl font-bold font-space-grotesk">
                 <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                  CryptoCollector
+                  {ensName || "CryptoCollector"}
                 </span>
               </h1>
               
-              <div className="flex items-center justify-center space-x-2 text-gray-300">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                </svg>
-                <span className="font-mono text-sm">0x1234...abcd</span>
-                <button className="text-cyan-400 hover:text-cyan-300 transition-colors">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              {isConnected && address ? (
+                <div className="flex items-center justify-center space-x-2 text-gray-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                   </svg>
-                </button>
-              </div>
+                  <span className="font-mono text-sm">{formatAddress(address)}</span>
+                  <button 
+                    onClick={() => copyToClipboard(address)}
+                    className="text-cyan-400 hover:text-cyan-300 transition-colors"
+                    title="Copy address"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </button>
+                </div>
+              ) : (
+                <div className="text-gray-400 text-center">
+                  <p>Connect your wallet to view profile</p>
+                </div>
+              )}
+
+              {/* Chain Info */}
+              {isConnected && chain && (
+                <div className="flex items-center justify-center space-x-2 text-gray-400">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <span className="text-sm">Connected to {chain.name}</span>
+                </div>
+              )}
+
+              {/* Balance Info */}
+              {balance && (
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-cyan-400">
+                    {parseFloat(balance.formatted).toFixed(4)} {balance.symbol}
+                  </div>
+                  <div className="text-gray-400 text-sm">Wallet Balance</div>
+                </div>
+              )}
 
               <p className="text-gray-400 max-w-md mx-auto">
                 Digital art collector and blockchain enthusiast. Passionate about discovering unique NFTs and supporting creators.
@@ -114,44 +167,68 @@ export default function ProfilePage() {
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-                <button className="bg-gradient-to-r from-purple-500 to-cyan-500 px-8 py-3 rounded-xl text-white font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25 hover:scale-105">
-                  Edit Profile
-                </button>
-                <button className="border border-purple-500/30 bg-black/20 backdrop-blur-sm px-8 py-3 rounded-xl text-white font-semibold transition-all duration-300 hover:border-purple-400/50 hover:bg-purple-500/10">
-                  Share Profile
-                </button>
+                {isConnected ? (
+                  <>
+                    <button className="bg-gradient-to-r from-purple-500 to-cyan-500 px-8 py-3 rounded-xl text-white font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25 hover:scale-105">
+                      Edit Profile
+                    </button>
+                    <button 
+                      onClick={() => address && copyToClipboard(address)}
+                      className="border border-purple-500/30 bg-black/20 backdrop-blur-sm px-8 py-3 rounded-xl text-white font-semibold transition-all duration-300 hover:border-purple-400/50 hover:bg-purple-500/10"
+                    >
+                      Share Profile
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex justify-center">
+                    <CustomConnectButton />
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
 
         {/* Stats Dashboard */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-          <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 text-center">
-            <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-              {userStats.totalNFTs}
+        {isConnected ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+            <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 text-center">
+              <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+                {userStats.totalNFTs}
+              </div>
+              <div className="text-gray-400 text-sm mt-1">NFTs Owned</div>
             </div>
-            <div className="text-gray-400 text-sm mt-1">NFTs Owned</div>
-          </div>
-          <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 text-center">
-            <div className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-              {userStats.totalValue} ETH
+            <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 text-center">
+              <div className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                {balance ? parseFloat(balance.formatted).toFixed(2) : "0.00"} {balance?.symbol || "ETH"}
+              </div>
+              <div className="text-gray-400 text-sm mt-1">Wallet Balance</div>
             </div>
-            <div className="text-gray-400 text-sm mt-1">Portfolio Value</div>
-          </div>
-          <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 text-center">
-            <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-              {userStats.totalSales} ETH
+            <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 text-center">
+              <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+                {userStats.totalSales} ETH
+              </div>
+              <div className="text-gray-400 text-sm mt-1">Total Sales</div>
             </div>
-            <div className="text-gray-400 text-sm mt-1">Total Sales</div>
-          </div>
-          <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 text-center">
-            <div className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-              {userStats.rank}
+            <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 text-center">
+              <div className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                {chain?.name || "Unknown"}
+              </div>
+              <div className="text-gray-400 text-sm mt-1">Network</div>
             </div>
-            <div className="text-gray-400 text-sm mt-1">Global Rank</div>
           </div>
-        </div>
+        ) : (
+          <div className="text-center py-16">
+            <div className="w-24 h-24 bg-gradient-to-br from-purple-400/20 to-cyan-400/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-300 mb-2">Wallet Not Connected</h3>
+            <p className="text-gray-400 mb-6">Connect your wallet to view your profile and stats</p>
+            <CustomConnectButton />
+          </div>
+        )}
 
         {/* Tabs */}
         <div className="flex flex-wrap gap-2 mb-8 border-b border-white/10">

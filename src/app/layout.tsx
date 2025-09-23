@@ -4,6 +4,8 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Web3Provider } from "@/providers/web3-provider";
+import { CustomConnectButton } from "@/components/connect-button";
 
 const inter = Inter({ subsets: ["latin"] });
 const spaceGrotesk = Space_Grotesk({ 
@@ -28,15 +30,16 @@ export default function RootLayout({
         spaceGrotesk.variable,
         "bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-gray-100 min-h-screen"
       )}>
-        {/* Animated Background */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]"></div>
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-conic from-purple-500/5 via-cyan-500/5 to-purple-500/5 rounded-full blur-3xl animate-spin" style={{animationDuration: '20s'}}></div>
-        </div>
+        <Web3Provider>
+          {/* Animated Background */}
+          <div className="fixed inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]"></div>
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-conic from-purple-500/5 via-cyan-500/5 to-purple-500/5 rounded-full blur-3xl animate-spin" style={{animationDuration: '20s'}}></div>
+          </div>
 
-        <div className="relative flex min-h-screen flex-col">
+          <div className="relative flex min-h-screen flex-col">
           {/* Header */}
           <header className="relative border-b border-white/10 bg-black/20 backdrop-blur-xl">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-transparent to-cyan-500/5"></div>
@@ -80,13 +83,7 @@ export default function RootLayout({
               </nav>
 
               {/* Wallet Connect Button */}
-              <button className="relative group overflow-hidden rounded-xl border border-purple-500/30 bg-gradient-to-r from-purple-500/10 to-cyan-500/10 px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:border-purple-400/50 hover:shadow-lg hover:shadow-purple-500/25">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-cyan-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                <span className="relative flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <span>Connect Wallet</span>
-                </span>
-              </button>
+              <CustomConnectButton />
             </div>
           </header>
 
@@ -132,7 +129,8 @@ export default function RootLayout({
               </div>
             </div>
           </footer>
-        </div>
+          </div>
+        </Web3Provider>
       </body>
     </html>
   );

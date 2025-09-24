@@ -143,7 +143,7 @@ export default function ProfilePage() {
                 </div>
               ) : (
                 <div className="text-gray-400 text-center">
-                  <p>Connect your wallet to view profile</p>
+                  <p>Connect your wallet using the header button</p>
                 </div>
               )}
 
@@ -169,26 +169,20 @@ export default function ProfilePage() {
                 Digital art collector and blockchain enthusiast. Passionate about discovering unique NFTs and supporting creators.
               </p>
 
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-                {isConnected ? (
-                  <>
-                    <button className="bg-gradient-to-r from-purple-500 to-cyan-500 px-8 py-3 rounded-xl text-white font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25 hover:scale-105">
-                      Edit Profile
-                    </button>
-                    <button 
-                      onClick={() => address && copyToClipboard(address)}
-                      className="border border-purple-500/30 bg-black/20 backdrop-blur-sm px-8 py-3 rounded-xl text-white font-semibold transition-all duration-300 hover:border-purple-400/50 hover:bg-purple-500/10"
-                    >
-                      Share Profile
-                    </button>
-                  </>
-                ) : (
-                  <div className="flex justify-center">
-                    <CustomConnectButton />
-                  </div>
-                )}
-              </div>
+              {/* Action Buttons - Only show when connected */}
+              {isConnected && (
+                <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+                  <button className="bg-gradient-to-r from-purple-500 to-cyan-500 px-8 py-3 rounded-xl text-white font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25 hover:scale-105">
+                    Edit Profile
+                  </button>
+                  <button 
+                    onClick={() => address && copyToClipboard(address)}
+                    className="border border-purple-500/30 bg-black/20 backdrop-blur-sm px-8 py-3 rounded-xl text-white font-semibold transition-all duration-300 hover:border-purple-400/50 hover:bg-purple-500/10"
+                  >
+                    Share Profile
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -229,8 +223,7 @@ export default function ProfilePage() {
               </svg>
             </div>
             <h3 className="text-xl font-semibold text-gray-300 mb-2">Wallet Not Connected</h3>
-            <p className="text-gray-400 mb-6">Connect your wallet to view your profile and stats</p>
-            <CustomConnectButton />
+            <p className="text-gray-400 mb-6">Connect your wallet using the button in the header to view your profile and stats</p>
           </div>
         )}
 

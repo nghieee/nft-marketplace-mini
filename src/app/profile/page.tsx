@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useAccount, useBalance, useEnsName } from "wagmi";
 import { CustomConnectButton } from "@/components/connect-button";
 import { useNFTs } from "@/hooks/useNFTs";
+import { MintNFT } from "@/components/mint-nft";
 
 const ownedNFTs = [
   {
@@ -60,7 +61,7 @@ export default function ProfilePage() {
   });
 
   // NFT data hook
-  const { nfts, loading: nftsLoading, error: nftsError, refreshNFTs } = useNFTs();
+  const { nfts, loading: nftsLoading, error: nftsError, refreshNFTs, addNewNFT } = useNFTs();
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
@@ -172,6 +173,7 @@ export default function ProfilePage() {
               {/* Action Buttons - Only show when connected */}
               {isConnected && (
                 <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+                  <MintNFT onMintSuccess={addNewNFT} />
                   <button className="bg-gradient-to-r from-purple-500 to-cyan-500 px-8 py-3 rounded-xl text-white font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25 hover:scale-105">
                     Edit Profile
                   </button>

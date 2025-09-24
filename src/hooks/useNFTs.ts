@@ -131,10 +131,18 @@ export function useNFTs() {
     }
   };
 
+  const addNewNFT = (newNFT: Omit<NFT, 'owner'>) => {
+    if (address) {
+      const nftWithOwner = { ...newNFT, owner: address };
+      setNfts(prev => [...prev, nftWithOwner]);
+    }
+  };
+
   return {
     nfts,
     loading,
     error,
-    refreshNFTs
+    refreshNFTs,
+    addNewNFT
   };
 }

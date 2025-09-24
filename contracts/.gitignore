@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Hardhat files
+cache/
+artifacts/
+
+# Environment variables
+.env
+
+# Deployment artifacts
+deployments/
+
+# Coverage reports
+coverage/
+coverage.json
+
+# Typechain
+typechain/
+typechain-types/
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

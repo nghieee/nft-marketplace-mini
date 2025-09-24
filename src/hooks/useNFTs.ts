@@ -138,11 +138,16 @@ export function useNFTs() {
     }
   };
 
+  const removeNFT = (nftId: string) => {
+    setNfts(prev => prev.filter(nft => nft.id !== nftId));
+  };
+
   return {
     nfts,
     loading,
     error,
     refreshNFTs,
-    addNewNFT
+    addNewNFT,
+    removeNFT
   };
 }

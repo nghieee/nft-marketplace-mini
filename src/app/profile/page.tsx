@@ -8,6 +8,7 @@ import { useAccount, useBalance, useEnsName } from "wagmi";
 import { CustomConnectButton } from "@/components/connect-button";
 import { useNFTs } from "@/hooks/useNFTs";
 import { MintNFT } from "@/components/mint-nft";
+import { SellNFT } from "@/components/sell-nft";
 
 const ownedNFTs = [
   {
@@ -61,7 +62,7 @@ export default function ProfilePage() {
   });
 
   // NFT data hook
-  const { nfts, loading: nftsLoading, error: nftsError, refreshNFTs, addNewNFT } = useNFTs();
+  const { nfts, loading: nftsLoading, error: nftsError, refreshNFTs, addNewNFT, removeNFT } = useNFTs();
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
@@ -85,6 +86,15 @@ export default function ProfilePage() {
     } catch (err) {
       console.error('Failed to copy: ', err);
     }
+  };
+
+  const handleSellSuccess = (nft: any, marketplaceNFT: any) => {
+    // Remove NFT from profile
+    removeNFT(nft.id);
+    
+    // In a real app, you would also add to marketplace
+    // For demo, we'll just show success message
+    console.log('NFT moved to marketplace:', marketplaceNFT);
   };
 
   return (
@@ -336,12 +346,13 @@ export default function ProfilePage() {
 
                         {/* Action Buttons */}
                         <div className="flex gap-2">
-                          <button className="flex-1 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-purple-500/30 rounded-xl py-3 text-white font-semibold transition-all duration-300 hover:from-purple-500/30 hover:to-cyan-500/30 hover:border-purple-400/50 hover:shadow-lg hover:shadow-purple-500/25">
-                            List for Sale
-                          </button>
+                          <SellNFT 
+                            nft={nft} 
+                            onSellSuccess={(marketplaceNFT) => handleSellSuccess(nft, marketplaceNFT)} 
+                          />
                           <button className="px-4 py-3 border border-white/10 rounded-xl text-gray-300 hover:border-cyan-500/30 hover:text-cyan-400 transition-all duration-300">
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                             </svg>
                           </button>
                         </div>

@@ -203,12 +203,17 @@ export function useMarketplaceNFTs() {
     console.log('Added to favorites:', nftId);
   };
 
+  const addNFTToMarketplace = (marketplaceNFT: MarketplaceNFT) => {
+    setNfts(prev => [...prev, marketplaceNFT]);
+  };
+
   return {
     nfts,
     loading,
     error,
     refreshMarketplace,
     buyNFT,
-    addToFavorites
+    addToFavorites,
+    addNFTToMarketplace
   };
 }
